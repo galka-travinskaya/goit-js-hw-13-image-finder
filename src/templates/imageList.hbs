@@ -1,7 +1,24 @@
 {{#each this}}
-<li class="hit-card">
-    <a href="">
-        <img src="{{this.webformatURL}}" alt="{{this.tags}}">
-    </a>
-</li>
+<div class="photo-card">
+<img src="{{this.webformatURL}}" data-source={{this.largeImageURL}} alt="{{this.tags}}" width="400" />
+
+  <div class="stats">
+    <p class="stats-item">
+      <i class="material-icons">thumb_up</i>
+      {{this.likes}}
+    </p>
+    <p class="stats-item">
+      <i class="material-icons">visibility</i>
+      {{this.views}}
+    </p>
+    <p class="stats-item">
+      <i class="material-icons">comment</i>
+      {{this.comments}}
+    </p>
+    <p class="stats-item">
+      <i class="material-icons">cloud_download</i>
+      {{this.downloads}}
+    </p>
+  </div>
+</div>
 {{/each}}

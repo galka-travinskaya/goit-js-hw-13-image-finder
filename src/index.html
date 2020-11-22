@@ -12,32 +12,36 @@
 
 <body>
     <form class="search-form" id="search-form">
-      <i class="material-icons md-light">face</i>
         <input
+          class="search-input"
           type="text"
           name="query"
           autocomplete="off"
           placeholder="Search images..."
         />
-        <button type="submit" class="btn btn-primary mb-2">Искать</button>
     </form>
+
+    <ul class="gallery">
+      <!-- Список <li> с карточками изображений -->
+    </ul>
+
+    <div id="sentinel"></div>
 
     <button
       type="button"
       class="btn btn-primary button"
       data-action="load-more"
     >
-    <span
+      <span
         class="spinner-border spinner-border-sm spinner is-hidden"
         role="status"
         aria-hidden="true"
-    ></span>
+      ></span>
 
-    <span class="label">Показать ещё</span>
+      <span class="label">Показать ещё</span>
     </button>
 
-    <ul class="gallery">
-      <!-- Список <li> с карточками изображений -->
-    </ul>
+    <div class="container"></div>
+
 </body>
 </html>
