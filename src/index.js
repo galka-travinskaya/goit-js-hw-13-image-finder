@@ -2,14 +2,13 @@ import './css/styles.css';
 import imageListTpl from './templates/imageList.hbs';
 import HitsApiService from './js/Api/apiService';
 // import infiniteScroll from 'infinite-scroll';
-import LoadMoreBtn from './js/loadMoreBtn';
+// import LoadMoreBtn from './js/loadMoreBtn';
 import * as basicLightbox from 'basiclightbox';
 import 'basiclightbox/dist/basicLightbox.min.css';
 
 var debounce = require('lodash.debounce');
 
 const observer = new IntersectionObserver(onEntry, options);
-
 
 const refs ={
     searchForm: document.querySelector('.search-form'),
@@ -18,10 +17,10 @@ const refs ={
     sentinel: document.querySelector('#sentinel'),
 };
 
-const loadMoreBtn = new LoadMoreBtn({
-    selector: '[data-action="load-more"]',
-    hidden: true,
-});
+// const loadMoreBtn = new LoadMoreBtn({
+//     selector: '[data-action="load-more"]',
+//     hidden: true,
+// });
 
 refs.input.addEventListener('input', debounce(onSearch, 500));
 // loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
@@ -42,22 +41,25 @@ function onSearch(e) {
 }
 
 function onLoadMore() {
-    loadMoreBtn.disable();
-    hitsApiService.fetchHits().then(oparateGallery);
+    // loadMoreBtn.disable();
+    hitsApiService.fetchHits().then(galleryRequests);
 }
 
-function oparateGallery(hits) {
+function galleryRequests(hits) {
+    console.log(hits);
+    observer.unobserve(refs.sentinel);
+
     if(hits.length) {
-        if(hits.length === 12 && !observer.thresholds) {  
-            observer.observe(refs.sentinel);
-            }
-            
         addHitsMarkup(hits);
         // scrollPage();
-        loadMoreBtn.enable();
-        return;
+        // loadMoreBtn.enable();
+
+        if(hits.length === 12) {  
+            observer.observe(refs.sentinel);
+        } else {
+            observer.unobserve(refs.sentinel);
+            }
     }
-    observer.unobserve(refs.centinel);
 }
 
 function addHitsMarkup(hits) {
@@ -88,10 +90,7 @@ function clearHitsContainer() {
         entries.forEach(entry => {
             if (entry.isIntersecting && hitsApiService.query !== '') {
                 console.log("LOADING...");
-                hitsApiService.fetchHits().then(hits => {
-                    addHitsMarkup(hits);
-                    hitsApiService.incrementPage();
-                });
+                hitsApiService.fetchHits().then(galleryRequests);
             }
         });
     }
