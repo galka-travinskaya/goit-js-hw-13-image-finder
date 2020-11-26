@@ -1,12 +1,15 @@
 import './css/styles.css';
 import imageListTpl from './templates/imageList.hbs';
 import HitsApiService from './js/Api/apiService';
-import infiniteScroll from 'infinite-scroll';
+// import infiniteScroll from 'infinite-scroll';
 import LoadMoreBtn from './js/loadMoreBtn';
 import * as basicLightbox from 'basiclightbox';
 import 'basiclightbox/dist/basicLightbox.min.css';
 
 var debounce = require('lodash.debounce');
+
+const observer = new IntersectionObserver(onEntry, options);
+
 
 const refs ={
     searchForm: document.querySelector('.search-form'),
@@ -40,11 +43,21 @@ function onSearch(e) {
 
 function onLoadMore() {
     loadMoreBtn.disable();
-    hitsApiService.fetchHits().then(hits => {
+    hitsApiService.fetchHits().then(oparateGallery);
+}
+
+function oparateGallery(hits) {
+    if(hits.length) {
+        if(hits.length === 12 && !observer.thresholds) {  
+            observer.observe(refs.sentinel);
+            }
+            
         addHitsMarkup(hits);
         // scrollPage();
         loadMoreBtn.enable();
-    });
+        return;
+    }
+    observer.unobserve(refs.centinel);
 }
 
 function addHitsMarkup(hits) {
@@ -71,7 +84,7 @@ function clearHitsContainer() {
 
     const hitsApiService = new HitsApiService();
 
-    const onEntry = entries => {
+    function onEntry (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting && hitsApiService.query !== '') {
                 console.log("LOADING...");
@@ -85,8 +98,7 @@ function clearHitsContainer() {
     const options = {
         rootMargin: '100px'
     }
-    const observer = new IntersectionObserver(onEntry, options);
-    observer.observe(refs.sentinel);
+    
 
 function onGalleryElClick(event) {
         if (event.target.nodeName !== 'IMG') {
