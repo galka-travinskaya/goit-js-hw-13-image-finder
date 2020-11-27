@@ -31,8 +31,10 @@ function onSearch(e) {
 
     hitsApiService.query = e.target.value.trim();
     if(hitsApiService.query.length === 0) {
+        
         return clearHitsContainer();
-    }
+    } 
+
     // Прячем кнопку
     // loadMoreBtn.show();
     hitsApiService.resetPage();
@@ -45,25 +47,30 @@ function onLoadMore() {
     hitsApiService.fetchHits().then(galleryRequests);
 }
 
-function galleryRequests(hits) {
-    console.log(hits);
-    observer.unobserve(refs.sentinel);
-
-    if(hits.length) {
-        addHitsMarkup(hits);
-        // scrollPage();
-        // loadMoreBtn.enable();
-
-        if(hits.length === 12) {  
+function galleryRequests(data) {
+    console.log(data.hits);
+    // observer.unobserve(refs.sentinel);
+        
+        if(hitsApiService.renderedImg < data.totalHits) {
             observer.observe(refs.sentinel);
-        } else {
-            observer.unobserve(refs.sentinel);
-            }
-    }
-}
+            addHitsMarkup(data.hits);
+            hitsApiService.renderedImg += 12;
+            // scrollPage();
+            // loadMoreBtn.enable();
+        }
 
-function addHitsMarkup(hits) {
-    refs.galleryList.insertAdjacentHTML('beforeend', imageListTpl(hits));
+        if(hitsApiService.renderedImg === data.totalHits) {
+            observer.unobserve(refs.sentinel);
+            return;
+        }
+
+        if(hitsApiService.renderedImg + 12 > data.totalHits) {
+            observer.unobserve(refs.sentinel);
+        }
+    }
+
+function addHitsMarkup(data) {
+    refs.galleryList.insertAdjacentHTML('beforeend', imageListTpl(data));
 }
 
 function clearHitsContainer() {

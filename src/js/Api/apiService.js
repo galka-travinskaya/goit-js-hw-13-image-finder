@@ -5,6 +5,7 @@ export default class apiService {
     constructor() {
         this.searchQuery = '';
         this.page = 1;
+        this.renderedImg = 0;
     }
 
     fetchHits() {
@@ -12,10 +13,10 @@ export default class apiService {
 
         return fetch(url)
             .then(response => response.json())
-            .then(({hits}) => {
+            .then((data) => {
                 this.incrementPage();
 
-                return hits;
+                return data;
             });
     }
 
@@ -25,6 +26,7 @@ export default class apiService {
 
     resetPage() {
         this.page = 1;
+        this.renderedImg = 0;
     }
 
     // Если убрать get и set, тогда везьде обращаемся только к searchQuery, a не query 
